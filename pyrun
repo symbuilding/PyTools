@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+
+import sys
+import logging
+import re
+import os
+
+args = sys.argv
+
+if len(args) < 2:
+    logging.error("Not enough arguments : <file_name>")
+    sys.exit(1)
+
+file_name = args[1]
+
+matched = re.findall(r"\..*$", file_name)
+
+if not matched:
+    logging.error(f"Not valid filename: {file_name}")
+    sys.exit(1)
+
+extention = matched[0]
+
+dick: dict = {
+    ".py": [f"python3 {file_name}"],
+    ".cpp": [f"g++ {file_name} -o cpp_bin", "./cpp_bin"],
+    ".js": [f"node {file_name}"],
+    ".ts": [f"npx ts-node {file_name}"],
+}
+
+if extention in dick:
+    cmds = dick[extention]
+    for cmd in cmds:
+        os.system(cmd)
